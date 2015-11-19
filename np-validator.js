@@ -7,6 +7,7 @@
  * @version 1.0.1
  */
 
+
 function NpValidator(config_params) {
 	var email_regex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
 	//
