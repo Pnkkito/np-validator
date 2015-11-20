@@ -3,6 +3,7 @@ Basic function for form validator based on Javascript
 
 How to used
 
+```bash
 NpValidator({
 				form: '#form_contact', // Form object, it will use jQuery object
 				params: {
@@ -16,3 +17,4 @@ NpValidator({
 					console.log('okay');
 				}
 			});
+```
