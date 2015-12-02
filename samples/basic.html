@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+</head>
+<body>
+	<div class="container">
+		<div class="col-xs-12 col-sm-5 col-md-5 col-md-offset-3">
+			<br>
+			<fieldset>
+				<legend>NpValidator Basic</legend>
+				<form action="" method="post" id="form-basic" class="form form-horizontal">
+					<div class="form-group">
+						<div class="col-sm-12">
+							<label for="username">Username</label>
+							<input type="text" name="username" id="username" class="form-control">
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-12">
+							<label for="password">Password</label>
+							<input type="text" name="password" id="password" class="form-control">
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-12 text-right">
+							<input type="submit" value="Guardar" class="btn btn-md btn-primary">
+						</div>
+					</div>
+				</form>	
+			</fieldset>
+				
+		</div>
+	</div>
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+	<script src="../np-validator.js"></script>
+	<script>
+		$('#form-basic').np_validator({
+			prevent: true,
+			params: {
+				username: {
+					required: true
+				},
+				password: {
+					required: true
+				}
+			},
+			error_style_enable: true,
+			good: function(){
+				console.log('ea');
+			}
+		});
+		/*NpValidator({
+                form: '#form-basic', // Form object, it will use jQuery object
+                error_class: 'my-error-class',
+                params: {
+                    username : {
+                        required: true
+                    }
+                }, 
+                prevent: true,  // Disable default form send action
+                success: function(){
+                    console.log('okay');
+                }
+            });*/
+	</script>
+</body>
+</html>

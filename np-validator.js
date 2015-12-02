@@ -4,96 +4,106 @@
  * 
  * Author: Esteban Rodriguez (erodriguez.develop@gmail.com)
  * date: 19-11-2015
- * @version 1.0.1
+ * @version 2.0.1
  */
 
+;(function($) {
+ 
+    $.fn.np_validator = function(options) {
 
-function NpValidator(config_params) {
-	var email_regex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-	//
-	var $form 	= null;
-	var count 	= 0;
-	var param_index = []; 
-	var var_default = {
-			form: '',
-			params : null,
-			trim: true,
-			prevent : false,
-			error_class: 'error',
-			success: function(){}
-		};
-	//
-	if ('form' in config_params) var_default.form = config_params.form;
-	if ('params' in config_params) var_default.params = config_params.params;
-	if ('trim' in config_params) var_default.trim = config_params.trim;
-	if ('prevent' in config_params) var_default.prevent = config_params.prevent;
-	if ('error_class' in config_params) var_default.error_class = config_params.error_class;
-	if ('success' in config_params) var_default.success = config_params.success;
+    	var eRegex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
 
-	if (!var_default.form) return false; 
+    	var s = $.extend( {}, $.fn.np_validator.defaults, options );
+    	var $f = this;
+    	var $p = [];
 
-	$form = $(var_default.form);
+    	console.log(s);
 
-	if (var_default.params != null)
-	{
-		for (var _index in var_default.params) param_index.push(_index); 	
-	}
+    	if (s.params == null)
+    	{
+    		console.log('No params configured');
+    		return false;
+    	}
 
-	$form.on('submit', function(e){
-		
-		if (param_index.length > 0)
-		{
-			var total_error = 0;
+    	for (var pIndex in s.params) $p.push(pIndex); 	
 
-			for (var i = 0; i < param_index.length; i++) 
+    	$f.on('submit', function(e){
+
+    		var nroErrors = 0;
+
+    		for (var i = 0; i < $p.length; i++) 
 			{
-				var tmp_name 			= param_index[ i ];
-				var tmp_params 			= var_default.params[ tmp_name ];
-				var tmp_params_index 	= [];
-				var $tmp_item 			= $('#'+tmp_name);
-				var tmp_item_value 		= $tmp_item.val();
-				var has_error 			= false;
+				// Verify if the object exists
+				if (document.getElementsByName($p[i]).length == 0) break;
+		
+				var eName 	= $p[i]; 
+				var ele 	= document.getElementsByName(eName);
+				var eType 	= ele[0].nodeName;
+				var eValue 	= $(ele).val();
+				var eParam 	= s.params[eName];
+				var hError 	= false;
+ 				
+ 				// Verify Valdiator Params
+ 				if (Object.keys(eParam).length == 0) break; 
 
-				// Clean
-				if (var_default.trim)
-				{ 	
-					tmp_item_value = tmp_item_value.replace(/^\s+|\s+$/g, '');	
-				}
+				// Trim clean
+				if (s.trim) eValue = eValue.replace(/^\s+|\s+$/g, '');
 
+				//**** Validator  ****\\
 				// Required
-				if ('required' in tmp_params && !tmp_item_value)
-				{
-					has_error = true; 
-				}
-
+				if ('required' in eParam && !eValue) hError = true; 
+				
 				// Regular Expresion
-				if ('regex' in tmp_params && !tmp_params.regex.test(tmp_item_value))
-				{
-					has_error = true; 
-				}
+				if ('regex' in eParam && !eParam.regex.test(eValue)) has_error = true; 
 
 				// Length Equal
-				if ('equalTo' in tmp_params && tmp_item_value.length != tmp_params.equalTo)
-				{
-					has_error = true; 
-				} 
+				if ('equalTo' in eParam && eValue.length != eParam.equalTo) has_error = true; 
 
-				if ('is_email' in tmp_params && !email_regex.test(tmp_item_value))
+				if ('is_email' in eParam && !eRegex.test(eValue)) has_error = true; 
+
+				// On Error
+				if (hError) nroErrors++;
+				$(ele)[ (hError ? 'addClass': 'removeClass') ](s.error_class);
+
+				if (hError && s.error_style_enable)
 				{
-					has_error = true; 
+					$(ele).attr('style', s.error_style);
 				}
+				else
+				{
+					$(ele).removeAttr('style');	
+				}
+			}
+    		
+    		// End validator
+    		if (nroErrors > 0 || s.prevent == true)
+    		{
+    			e.preventDefault();
 
-				// Error or Success class
-				$tmp_item[ (has_error ? 'addClass': 'removeClass') ](var_default.error_class);
+    			s.bad.call();
+    		}
 
-				// Error Add counter
-				if (has_error) total_error++;
-			};	
+    		if (nroErrors == 0)
+    		{
+    			s.good.call();		
+    		}
+			
+    	});
+    };
 
-			if (total_error > 0) return false;
-			if (var_default.prevent == true) e.preventDefault();
-
-			var_default.success();
-		}  
-	}); 
-}
+	$.fn.np_validator.defaults = {
+	    params: null,
+		trim: true,
+		prevent: false,
+		error_class: 'error',
+		error_style: 'border:1px solid #CE1316;box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 6px #CE1316;-webkit-box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 6px #CE1316',
+		error_style_enable: false,
+		ajax_send: false,
+		ajax_url: '',
+		before: function(){},
+		bad: function(){},
+		good: function(){},
+		after: function(){}
+	};
+ 
+}(jQuery));
