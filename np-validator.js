@@ -17,8 +17,6 @@
     	var $f = this;
     	var $p = [];
 
-    	console.log(s);
-
     	if (s.params == null)
     	{
     		console.log('No params configured');
@@ -51,15 +49,15 @@
 
 				//**** Validator  ****\\
 				// Required
-				if ('required' in eParam && !eValue) hError = true; 
+				if ('required' in eParam && eParam.required == true && !eValue) hError = true; 
 				
 				// Regular Expresion
-				if ('regex' in eParam && !eParam.regex.test(eValue)) has_error = true; 
+				if (eValue && 'regex' in eParam && !eParam.regex.test(eValue)) hError = true; 
 
 				// Length Equal
-				if ('equalTo' in eParam && eValue.length != eParam.equalTo) has_error = true; 
+				if (eValue && 'equalTo' in eParam && eValue.length != eParam.equalTo) hError = true; 
 
-				if ('is_email' in eParam && !eRegex.test(eValue)) has_error = true; 
+				if (eValue && 'is_email' in eParam && !eRegex.test(eValue)) hError = true; 
 
 				// On Error
 				if (hError) nroErrors++;
@@ -89,6 +87,43 @@
     		}
 			
     	});
+	
+		if (s.limitOnKey)
+		{
+			var dorks = {
+				only_number : /^[0-9]+$/,
+				only_string : /^[a-zA-Z]+$/,
+				only_alpha_string : /^[a-zA-Zá-úÁ-Ú]+$/,
+				only_alpha_string_ws : /^[a-zA-Zá-úÁ-Ú\s]+$/,
+				only_address : /^[a-zA-Zá-úÁ-Ú0-9\s\-\_\,\.]+$/
+			};
+
+			for (var i = 0; i < $p.length; i++) 
+			{
+				// Verify if the object exists
+				if (document.getElementsByName($p[i]).length == 0) break;
+				
+				var eName 	= $p[i]; 
+				var $ele 	= $(document.getElementsByName(eName));	
+				var eParam 	= s.params[eName];
+
+				if ('key_dork' in eParam)
+				{
+					if (eParam.key_dork in dorks)
+					{ 
+						$ele.keypress(function(e){
+							var nParam = s.params[ $(this).attr('name')];
+							var dork_rg = dorks[ nParam.key_dork ];
+
+							if (!dork_rg.test(String.fromCharCode(e.which)))
+		    				{
+		      					return false;
+		    				}
+						});
+					}
+				} 
+			}
+		}
     };
 
 	$.fn.np_validator.defaults = {
@@ -100,6 +135,7 @@
 		error_style_enable: false,
 		ajax_send: false,
 		ajax_url: '',
+		limitOnKey: false,
 		before: function(){},
 		bad: function(){},
 		good: function(){},
@@ -107,4 +143,3 @@
 	};
  
 }(jQuery));
-
