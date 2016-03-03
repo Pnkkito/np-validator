@@ -12,6 +12,7 @@
 			<br>
 			<fieldset>
 				<legend>NpValidator Basic</legend>
+				<h4><small>¡This example only validate require values!</small></h4>
 				<form action="" method="post" id="form-basic" class="form form-horizontal">
 					<div class="form-group">
 						<div class="col-sm-12">
@@ -22,52 +23,47 @@
 					<div class="form-group">
 						<div class="col-sm-12">
 							<label for="password">Password</label>
-							<input type="text" name="password" id="password" class="form-control">
+							<input type="passsord" name="password" id="password" class="form-control">
 						</div>
 					</div>
 					<div class="form-group">
 						<div class="col-sm-12 text-right">
-							<input type="submit" value="Guardar" class="btn btn-md btn-primary">
+							<input type="submit" value="Send" class="btn btn-md btn-primary">
 						</div>
 					</div>
 				</form>	
 			</fieldset>
-				
+			<br>
+			<label class="messsage">&nbsp;</label>
 		</div>
 	</div>
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-	<script src="../np-validator.js"></script>
+	<script src="../np-validator.min.js"></script>
 	<script>
-		$('#form-basic').np_validator({
-			prevent: true,
-			params: {
-				username: {
-					required: true
+		;(function($){
+			var $msg = $('.messsage');
+
+			$('#form-basic').np_validator({
+				prevent: true,
+				params: {
+					username: {
+						required: true
+					},
+					password: {
+						required: true
+					}
 				},
-				password: {
-					required: true
+				error_style_enable: true,
+				good: function() {
+					$msg.text('Good');
+				},
+				bad: function() {
+					$msg.text('Bad');
 				}
-			},
-			error_style_enable: true,
-			good: function(){
-				console.log('ea');
-			}
-		});
-		/*NpValidator({
-                form: '#form-basic', // Form object, it will use jQuery object
-                error_class: 'my-error-class',
-                params: {
-                    username : {
-                        required: true
-                    }
-                }, 
-                prevent: true,  // Disable default form send action
-                success: function(){
-                    console.log('okay');
-                }
-            });*/
+			});
+		})(jQuery);
 	</script>
 </body>
 </html>

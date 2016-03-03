@@ -31,11 +31,15 @@
 
     		for (var i = 0; i < $p.length; i++) 
 			{
-				// Verify if the object exists
-				if (document.getElementsByName($p[i]).length == 0) break;
-		
+				//Verify what method get element
+				var get_by_id = ( 'get_by_id' in s.params[$p[i]] && s.params[$p[i]].get_by_id == true ? true: false);
+				
+				// Verify element exists
+				if (document[ (get_by_id ? 'getElementById': 'getElementsByName') ]($p[i]).length == 0) break;
+				
+				// Params
 				var eName 	= $p[i]; 
-				var ele 	= document.getElementsByName(eName);
+				var ele 	= (get_by_id ? document.getElementById(eName) : document.getElementsByName(eName));
 				var eType 	= ele[0].nodeName;
 				var eValue 	= $(ele).val();
 				var eParam 	= s.params[eName];
@@ -73,19 +77,11 @@
 				}
 			}
     		
-    		// End validator
-    		if (nroErrors > 0 || s.prevent == true)
-    		{
-    			e.preventDefault();
-
-    			s.bad.call();
-    		}
-
-    		if (nroErrors == 0)
-    		{
-    			s.good.call();		
-    		}
-			
+    		// Detect prevent
+    		if (s.prevent == true) e.preventDefault();
+    		
+    		// Call result function
+    		s[ (nroErrors == 0 ? 'good': 'bad') ].call();	
     	});
 	
 		if (s.limitOnKey)
