@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Np-Validator :: Tabs Example</title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+</head>
+<body>
+	<div class="container">
+		<div class="col-xs-12 col-sm-5 col-md-5 col-md-offset-3">
+			<br>
+			<fieldset>
+				<legend>Np-Validator Tabs Steps</legend>
+				<h4><small>¡This example validate require with tab steps values!</small></h4>
+				<form action="" method="post" id="form-basic" class="form form-horizontal">
+					<!-- Nav tabs -->
+  					<ul class="nav nav-tabs" role="tablist">
+    					<li role="presentation" class="active"><a href="#tab_first" aria-controls="tab_first" role="tab" data-toggle="tab">Personal</a></li>
+    					<li role="presentation"><a href="#tab_end" aria-controls="tab_end" role="tab" data-toggle="tab">Profesional</a></li>
+  					</ul>
+
+					<!-- Tab panes -->
+					<form action="">
+						<div class="tab-content">
+							<div role="tabpanel" class="tab-pane active" id="tab_first">
+								<br>
+								<div class="form-group">
+									<div class="col-sm-12">
+										<label for="name">Name</label>
+										<input type="text" name="name" id="name" class="form-control">
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-12 text-right">
+										<input type="button" value="Next" class="btn btn-md btn-primary" id="btn_next">
+									</div>
+								</div>
+							</div>
+							<div role="tabpanel" class="tab-pane" id="tab_end">
+								<br>
+								<div class="form-group">
+									<div class="col-sm-12">
+										<label for="last_name">Lastname</label>
+										<input type="text" name="last_name" id="last_name" class="form-control">
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-12 text-right">
+										<input type="button" value="Send" class="btn btn-md btn-primary" id="btn_send">
+									</div>
+								</div>
+							</div>
+						</div>
+					</form>						
+				</form>	
+			</fieldset>
+			<br>
+			<label class="messsage">&nbsp;</label>
+		</div>
+	</div>
+	<hr>
+	<p class="text-center"><a href="./index.html">&lt; Back Examples</a></p>
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+	<script src="../np-validator.js"></script>
+	<script>
+		;(function($){
+			var $msg = $('.messsage');
+
+			var $form_obj = $('#form-basic').np_validator({
+					load_init: false,
+					prevent: true,
+					params: {
+						name: {
+							required: true,
+							tab_index : 0
+						},
+						last_name: {
+							required: true,
+							tab_index : 1
+						}
+					},
+					tab_enable: true,
+					tab_index: null,
+					error_style_enable: true,
+					auto_send: false,
+					good: function() {
+						$msg.text('Good 1');
+					},
+					bad: function() {
+						$msg.text('Bad');
+					}
+				});
+
+			var tab_valid = function(index, event) {
+				$form_obj.setTabIndex( index );
+
+				$('#form-basic').submit();
+
+				if ( ! $form_obj.is_valid)
+				{
+					event.preventDefault();	
+				} 
+			};
+
+			$('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+				var $li_ele = $(e.relatedTarget).parent(); 
+
+				tab_valid( parseInt($li_ele.parent().find($li_ele).index()), e);
+			});
+
+			$('#btn_next').on('click', function(){
+				$('.nav-tabs > .active').next('li').find('a').trigger('click');
+			});
+
+			$('#btn_send').on('click', function(){
+				$form_obj.setTabIndex( 1 );
+
+				$('#form-basic').submit();
+
+				if ( $form_obj.is_valid)
+				{
+					$msg.text('Send Form');
+				} 
+			});
+				
+		})(jQuery);
+	</script>
+</body>
+</html>
